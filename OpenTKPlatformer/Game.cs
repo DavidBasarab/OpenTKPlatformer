@@ -15,7 +15,7 @@ namespace OpenTKPlatformer
         {
             GL.Enable(EnableCap.Texture2D);
 
-            _view = new View(Vector2.Zero, 1.0, MathHelper.PiOver4);
+            _view = new View(Vector2.Zero, 1.0, 0.0);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -66,7 +66,8 @@ namespace OpenTKPlatformer
         {
             base.OnUpdateFrame(e);
 
-            _view.Position = new Vector2(_view.Position.X, _view.Position.Y + 0.01f);
+            //_view.Position = new Vector2(_view.Position.X, _view.Position.Y + 0.01f);
+            //_view.Zoom -= 0.01f;
 
             _view.Update();
         }
