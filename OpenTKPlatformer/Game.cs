@@ -9,6 +9,7 @@ namespace OpenTKPlatformer
     public class Game : GameWindow
     {
         private readonly View _view;
+        private InputController _inputController;
         private Texture2D _texture;
 
         public Game(int width, int height)
@@ -19,6 +20,8 @@ namespace OpenTKPlatformer
             _view = new View(Vector2.Zero, 1.0, 0.0);
 
             Mouse.ButtonDown += MouseOnButtonDown;
+
+            _inputController = new InputController(this);
         }
 
         protected override void OnLoad(EventArgs e)
@@ -77,7 +80,40 @@ namespace OpenTKPlatformer
             //_view.Position = new Vector2(_view.Position.X, _view.Position.Y + 0.01f);
             //_view.Zoom -= 0.01f;
 
+            if (_inputController.MouseButtonPress(MouseButton.Left))
+            {
+
+                var pos = new Vector2(Mouse.X, Mouse.Y);
+
+                pos -= new Vector2(Width, Height) / 2f;
+
+                pos = _view.ToWorld(pos);
+
+                _view.SetPosition(pos, TweenType.QuarticOut, 15);
+            }
+
+            if (_inputController.KeyDown(Key.Right))
+            {
+                _view.SetPosition(_view.PositionGoTo + new Vector2(5, 0), TweenType.QuarticOut, 15);
+            }
+
+            if (_inputController.KeyDown(Key.Left))
+            {
+                _view.SetPosition(_view.PositionGoTo - new Vector2(5, 0), TweenType.QuarticOut, 15);
+            }
+
+            if (_inputController.KeyDown(Key.Up))
+            {
+                _view.SetPosition(_view.PositionGoTo - new Vector2(0, 5), TweenType.QuarticOut, 15);
+            }
+
+            if (_inputController.KeyDown(Key.Down))
+            {
+                _view.SetPosition(_view.PositionGoTo + new Vector2(0, 5), TweenType.QuarticOut, 15);
+            }
+
             _view.Update();
+            _inputController.Update();
         }
 
         private void MouseOnButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)

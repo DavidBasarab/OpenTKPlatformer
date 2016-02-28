@@ -18,12 +18,13 @@ namespace OpenTKPlatformer
         private int _currentStep;
         private Vector2 _positionFrom;
 
-        private Vector2 _positionGoTo;
         private int _tweenSteps;
 
         private TweenType _tweenType;
 
         public Vector2 Position { get; private set; }
+
+        public Vector2 PositionGoTo { get; private set; }
 
         /// <summary>
         ///     In radians, + = clockwise
@@ -58,7 +59,7 @@ namespace OpenTKPlatformer
         {
             Position = newPosition;
             _positionFrom = newPosition;
-            _positionGoTo = newPosition;
+            PositionGoTo = newPosition;
             _tweenType = TweenType.Instant;
             _currentStep = 0;
             _tweenSteps = 0;
@@ -68,7 +69,7 @@ namespace OpenTKPlatformer
         {
             _positionFrom = Position;
             Position = newPosition;
-            _positionGoTo = newPosition;
+            PositionGoTo = newPosition;
             _tweenType = type;
             _currentStep = 0;
             _tweenSteps = numberOfSteps;
@@ -88,25 +89,25 @@ namespace OpenTKPlatformer
         {
             if (_currentStep < _tweenSteps)
             {
+                _currentStep++;
+
                 switch (_tweenType)
                 {
                     case TweenType.Linear:
-                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetLinear((float)_currentStep / _tweenSteps);
+                        Position = _positionFrom + (PositionGoTo - _positionFrom) * GetLinear((float)_currentStep / _tweenSteps);
                         break;
                     case TweenType.QuadraticInOut:
-                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetQuadraticInOut((float)_currentStep / _tweenSteps);
+                        Position = _positionFrom + (PositionGoTo - _positionFrom) * GetQuadraticInOut((float)_currentStep / _tweenSteps);
                         break;
                     case TweenType.CubicInOut:
-                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetCubicInOut((float)_currentStep / _tweenSteps);
+                        Position = _positionFrom + (PositionGoTo - _positionFrom) * GetCubicInOut((float)_currentStep / _tweenSteps);
                         break;
                     case TweenType.QuarticOut:
-                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetQuarticOut((float)_currentStep / _tweenSteps);
+                        Position = _positionFrom + (PositionGoTo - _positionFrom) * GetQuarticOut((float)_currentStep / _tweenSteps);
                         break;
                 }
-
-                _currentStep++;
             }
-            else Position = _positionGoTo;
+            else Position = PositionGoTo;
         }
 
         private float GetCubicInOut(float ratio)
