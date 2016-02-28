@@ -33,31 +33,36 @@ namespace OpenTKPlatformer
 
             GL.ClearColor(Color.CornflowerBlue);
 
-            GL.LoadIdentity();
+            SpriteBatch.Begin(Width, Height);
 
             _view.ApplyTransform();
 
             _texture.Bind();
 
-            GL.Begin(PrimitiveType.Quads);
+            SpriteBatch.Draw(_texture, Vector2.Zero, new Vector2(0.2f, 0.2f), Color.Green, new Vector2(10, 50));
+            SpriteBatch.Draw(_texture, new Vector2(100, 10), new Vector2(0.2f, 0.2f), Color.Pink, new Vector2(10, 50));
+            SpriteBatch.Draw(_texture, new Vector2(200, 20), new Vector2(0.2f, 0.2f), Color.Yellow, new Vector2(10, 50));
+            SpriteBatch.Draw(_texture, new Vector2(300, 30), new Vector2(0.2f, 0.2f), Color.Blue, new Vector2(10, 50));
 
-            GL.Color3(Color.Red);
-            GL.TexCoord2(0, 0);
-            GL.Vertex2(0, 0);
+            //GL.Begin(PrimitiveType.Quads);
 
-            GL.Color3(Color.Blue);
-            GL.TexCoord2(1, 0);
-            GL.Vertex2(1, 0);
+            //GL.Color3(Color.Red);
+            //GL.TexCoord2(0, 0);
+            //GL.Vertex2(0, 0);
 
-            GL.Color3(Color.White);
-            GL.TexCoord2(1, 1);
-            GL.Vertex2(1, -0.9f);
+            //GL.Color3(Color.Blue);
+            //GL.TexCoord2(1, 0);
+            //GL.Vertex2(1, 0);
 
-            GL.Color3(Color.Yellow);
-            GL.TexCoord2(0, 1);
-            GL.Vertex2(0, -1);
+            //GL.Color3(Color.White);
+            //GL.TexCoord2(1, 1);
+            //GL.Vertex2(1, -0.9f);
 
-            GL.End();
+            //GL.Color3(Color.Yellow);
+            //GL.TexCoord2(0, 1);
+            //GL.Vertex2(0, -1);
+
+            //GL.End();
 
             SwapBuffers();
         }
