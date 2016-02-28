@@ -2,13 +2,14 @@
 using System.Drawing;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using OpenTK.Input;
 
 namespace OpenTKPlatformer
 {
     public class Game : GameWindow
     {
-        private Texture2D _texture;
         private readonly View _view;
+        private Texture2D _texture;
 
         public Game(int width, int height)
                 : base(width, height)
@@ -16,6 +17,8 @@ namespace OpenTKPlatformer
             GL.Enable(EnableCap.Texture2D);
 
             _view = new View(Vector2.Zero, 1.0, 0.0);
+
+            Mouse.ButtonDown += MouseOnButtonDown;
         }
 
         protected override void OnLoad(EventArgs e)
@@ -75,6 +78,17 @@ namespace OpenTKPlatformer
             //_view.Zoom -= 0.01f;
 
             _view.Update();
+        }
+
+        private void MouseOnButtonDown(object sender, MouseButtonEventArgs mouseButtonEventArgs)
+        {
+            var pos = new Vector2(mouseButtonEventArgs.Position.X, mouseButtonEventArgs.Position.Y);
+
+            pos -= new Vector2(Width, Height) / 2f;
+
+            pos = _view.ToWorld(pos);
+
+            _view.SetPosition(pos, TweenType.CubicInOut, 60);
         }
     }
 }

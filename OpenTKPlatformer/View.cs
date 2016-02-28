@@ -1,11 +1,29 @@
-﻿using OpenTK;
+﻿using System;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace OpenTKPlatformer
 {
+    public enum TweenType
+    {
+        Instant,
+        Linear,
+        QuadraticInOut,
+        CubicInOut,
+        QuarticOut
+    }
+
     public class View
     {
-        public Vector2 Position { get; set; }
+        private int _currentStep;
+        private Vector2 _positionFrom;
+
+        private Vector2 _positionGoTo;
+        private int _tweenSteps;
+
+        private TweenType _tweenType;
+
+        public Vector2 Position { get; private set; }
 
         /// <summary>
         ///     In radians, + = clockwise
@@ -36,6 +54,79 @@ namespace OpenTKPlatformer
             GL.MultMatrix(ref transform);
         }
 
-        public void Update() { }
+        public void SetPosition(Vector2 newPosition)
+        {
+            Position = newPosition;
+            _positionFrom = newPosition;
+            _positionGoTo = newPosition;
+            _tweenType = TweenType.Instant;
+            _currentStep = 0;
+            _tweenSteps = 0;
+        }
+
+        public void SetPosition(Vector2 newPosition, TweenType type, int numberOfSteps)
+        {
+            _positionFrom = Position;
+            Position = newPosition;
+            _positionGoTo = newPosition;
+            _tweenType = type;
+            _currentStep = 0;
+            _tweenSteps = numberOfSteps;
+        }
+
+        public Vector2 ToWorld(Vector2 input)
+        {
+            input /= (float)Zoom;
+
+            var dx = new Vector2((float)Math.Cos(Rotation), (float)Math.Sin(Rotation));
+            var dy = new Vector2((float)Math.Cos(Rotation + MathHelper.PiOver2), (float)Math.Sin(Rotation + MathHelper.PiOver2));
+
+            return Position + dx * input.X + dy * input.Y;
+        }
+
+        public void Update()
+        {
+            if (_currentStep < _tweenSteps)
+            {
+                switch (_tweenType)
+                {
+                    case TweenType.Linear:
+                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetLinear((float)_currentStep / _tweenSteps);
+                        break;
+                    case TweenType.QuadraticInOut:
+                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetQuadraticInOut((float)_currentStep / _tweenSteps);
+                        break;
+                    case TweenType.CubicInOut:
+                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetCubicInOut((float)_currentStep / _tweenSteps);
+                        break;
+                    case TweenType.QuarticOut:
+                        Position = _positionFrom + (_positionGoTo - _positionFrom) * GetQuarticOut((float)_currentStep / _tweenSteps);
+                        break;
+                }
+
+                _currentStep++;
+            }
+            else Position = _positionGoTo;
+        }
+
+        private float GetCubicInOut(float ratio)
+        {
+            return ratio * ratio * ratio / (3 * ratio * ratio - 3 * ratio + 1);
+        }
+
+        private float GetLinear(float ratio)
+        {
+            return ratio;
+        }
+
+        private float GetQuadraticInOut(float ratio)
+        {
+            return ratio * ratio / (2 * ratio * ratio - 2 * ratio + 1);
+        }
+
+        private float GetQuarticOut(float ratio)
+        {
+            return -((ratio - 1) * (ratio - 1) * (ratio - 1) * (ratio - 1)) + 1;
+        }
     }
 }
